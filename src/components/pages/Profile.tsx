@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { getHomep } from '../../apis/services/homepService';
 import cat from '../../assets/cat.svg';
@@ -9,6 +9,7 @@ import Chip from '../atoms/Chip';
 import HomeP, { Item } from '../molecules/HomeP';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [homep, setHomep] = useState({
     nickname: '',
@@ -28,16 +29,11 @@ const Profile = () => {
     if (!id) return;
 
     getHomep(id).then((data) => {
-      console.log(data);
       setHomep({
-        one: undefined,
-        two: undefined,
-        three: undefined,
-        bg: {
-          code: 'BG_ITEM_BEACH',
-          name: 'default',
-          imageUrl: 'https://image.homepsearch.site/default/BG/beach.svg',
-        } as Item,
+        one: data.one,
+        two: data.two,
+        three: data.three,
+        bg: data.bg,
         nickname: data.nickname,
         tags: data.tags,
         url: data.snsUrl,
@@ -49,7 +45,7 @@ const Profile = () => {
     <div>
       <Title>
         <Cat src={cat} alt={'cat'} />
-        <Nickname>{homep.nickname}</Nickname>
+        <Nickname>{homep.nickname} 님의 홈피</Nickname>
       </Title>
       <ChipList>
         {homep.tags.map((tag) => (
@@ -58,9 +54,9 @@ const Profile = () => {
       </ChipList>
       <HomeP
         readOnly={true}
-        // one={}
-        // two={}
-        // three={}
+        one={homep.one}
+        two={homep.two}
+        three={homep.three}
         bg={homep.bg}
       />
       <URLWrapper>
@@ -72,7 +68,7 @@ const Profile = () => {
           fill={'fill'}
           size={'full'}
           disabled={false}
-          text={'둘러보기'}
+          text={'홈피서지 더 둘러보기'}
           onClick={() => {}}
         />
         <div>
@@ -83,12 +79,13 @@ const Profile = () => {
             text={'공유하기'}
             onClick={() => {}}
           />
+
           <Button
             fill={'weak'}
             size={'full'}
             disabled={false}
             text={'새로 만들기'}
-            onClick={() => {}}
+            onClick={() => navigate('/create')}
           />
         </div>
       </ButtonContainer>
