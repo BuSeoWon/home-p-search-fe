@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { styled } from 'styled-components';
 import { postHomep } from '../../apis/services/homepService';
@@ -19,6 +19,10 @@ const ProfileCreation = () => {
   const [bg, setBg] = useState<Item | undefined>();
 
   const handleReset = () => {
+    if (!window.confirm('모두 초기화 하실건가요?')) {
+      return;
+    }
+
     setOne(undefined);
     setTwo(undefined);
     setThree(undefined);
@@ -33,10 +37,10 @@ const ProfileCreation = () => {
 
   const validatePost = () => {
     if (!one || !two || !three) {
-      throw new Error('가구를 모두 선택해 주세요.');
+      throw new Error('홈피를 꾸며주세요.');
     }
     if (tags.length < 1) {
-      throw new Error('태그는 최소 한 개 이상 입력해 주세요.');
+      throw new Error('태그를 1개 이상 추가해 주세요.');
     }
   };
 
@@ -45,6 +49,10 @@ const ProfileCreation = () => {
       validatePost();
     } catch (error) {
       if (error instanceof Error) alert(error.message);
+      return;
+    }
+
+    if (!window.confirm('홈피서지를 만들겠어요?')) {
       return;
     }
 
@@ -65,6 +73,12 @@ const ProfileCreation = () => {
         console.error(e.message);
       });
   };
+
+  useEffect(() => {
+    if (!nickname) {
+      navigate('/');
+    }
+  }, [navigate, nickname]);
 
   return (
     <IntroWrapper>
@@ -118,7 +132,9 @@ const ProfileCreation = () => {
   );
 };
 
-const IntroWrapper = styled.div``;
+const IntroWrapper = styled.div`
+  padding-bottom: 20px;
+`;
 
 const Main = styled.div`
   display: flex;
@@ -132,7 +148,7 @@ const Title = styled.div`
   font-size: 20px;
   font-style: normal;
   font-weight: 600;
-  line-height: 140%; /* 28px */
+  line-height: 140%;
 
   margin-bottom: 20px;
 `;
