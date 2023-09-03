@@ -62,10 +62,9 @@ const HomeP = ({
     if (itemCategory.length > 0) {
       getItemList(itemCategory)
         .then((data) => {
-          console.log(data);
-          setItems(data); // 확인 필요
+          setItems(data);
         })
-        .catch(() => alert('error'));
+        .catch((e) => console.error(e.message));
     }
   }, [itemCategory]);
 
@@ -88,7 +87,7 @@ const HomeP = ({
             $top={'40%'}
             $left={'1%'}
             src={one?.imageUrl}
-            onClick={() => handleShowItemList('one')}
+            onClick={!readOnly ? () => handleShowItemList('one') : () => {}}
           />
         ) : (
           <Plus
@@ -103,7 +102,7 @@ const HomeP = ({
             $top={'16%'}
             $left={'17%'}
             src={two?.imageUrl}
-            onClick={() => handleShowItemList('one')}
+            onClick={!readOnly ? () => handleShowItemList('one') : () => {}}
           />
         ) : (
           <Plus
@@ -118,7 +117,7 @@ const HomeP = ({
             $top={'34%'}
             $left={'54%'}
             src={three?.imageUrl}
-            onClick={() => handleShowItemList('one')}
+            onClick={!readOnly ? () => handleShowItemList('one') : () => {}}
           />
         ) : (
           <Plus
@@ -154,7 +153,9 @@ const HomeP = ({
               );
             })}
           </ItemList>
-          <div>작가 macrovector 출처 Freepik</div>
+          <CopyRightsWrapper>
+            <CopyRights>작가 macrovector 출처 Freepik</CopyRights>
+          </CopyRightsWrapper>
         </>
       ) : (
         <></>
@@ -163,16 +164,35 @@ const HomeP = ({
   );
 };
 
-const ItemList = styled.div`
-  /* display: flex; */
-  /* gap: 28px; */
+const CopyRightsWrapper = styled.div`
+  display: flex;
+  justify-content: right;
   width: 100%;
+  padding: 4px 0;
+`;
+
+const CopyRights = styled.div`
+  color: #cacddd;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 11.2px */
+`;
+
+const ItemList = styled.div`
+  display: flex;
+  gap: 28px;
+  width: calc(100% + 20px);
   /* height: 160px; */
   padding: 32px 0px 20.861px 27px;
 
-  border-radius: 8px;
+  overflow: scroll;
+
+  border-radius: 8px 0 0 8px;
   background: var(--system-white, #fff);
   box-shadow: 0px 0px 20px 0px rgba(183, 183, 183, 0.25);
+
+  margin-top: 8px;
 `;
 
 const HomePWrapper = styled.div`
