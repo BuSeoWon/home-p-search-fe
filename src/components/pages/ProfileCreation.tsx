@@ -66,8 +66,8 @@ const ProfileCreation = () => {
       snsUrl: url,
     })
       .then((data) => {
-        // ID 가ㅏ져오기
         navigate(`/profile/${data.uuid}`);
+        localStorage.setItem('uuid', data.uuid);
       })
       .catch((e) => {
         console.error(e.message);
