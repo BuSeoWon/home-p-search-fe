@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { getHomep } from '../../apis/services/homepService';
+import { getHomep, getRandomHomep } from '../../apis/services/homepService';
 import cat from '../../assets/cat.svg';
 import url from '../../assets/url.svg';
 import Button from '../atoms/Button';
@@ -24,6 +25,12 @@ const Profile = () => {
     tags: [],
     url: '',
   });
+
+  const lookAround = () => {
+    getRandomHomep().then((data) => {
+      navigate(`/profile/${data.uuid}`);
+    });
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -69,17 +76,21 @@ const Profile = () => {
           size={'full'}
           disabled={false}
           text={'홈피서지 더 둘러보기'}
-          onClick={() => {}}
+          onClick={lookAround}
         />
         <div>
-          <Button
-            fill={'weak'}
-            size={'full'}
-            disabled={false}
-            text={'공유하기'}
-            onClick={() => {}}
-          />
-
+          <CopyToClipboard
+            text={window.location.href}
+            onCopy={() => alert('프로필 URL이 복사되었어요.')}
+          >
+            <Button
+              fill={'weak'}
+              size={'full'}
+              disabled={false}
+              text={'공유하기'}
+              onClick={() => {}}
+            />
+          </CopyToClipboard>
           <Button
             fill={'weak'}
             size={'full'}
