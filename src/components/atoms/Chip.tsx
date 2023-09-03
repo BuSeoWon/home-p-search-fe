@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router';
 import { styled } from 'styled-components';
+import { getRandomHomepIdByTag } from '../../apis/services/homepService';
 import x from '../../assets/x.svg';
 
 const Chip = ({
@@ -10,8 +12,23 @@ const Chip = ({
   isRemovable?: boolean;
   handleRemove?: () => void;
 }) => {
+  const navigate = useNavigate();
+
+  const navigateToRandomHomepByTag = () => {
+    getRandomHomepIdByTag(text.slice(1))
+      .then((data) => {
+        navigate(`/profile/${data.uuid}`);
+      })
+      .catch((e) => {
+        if (e instanceof Error) console.error(e.message);
+      });
+  };
+
   return (
-    <SChip $isRemovable={isRemovable || false}>
+    <SChip
+      $isRemovable={isRemovable || false}
+      onClick={isRemovable ? () => {} : navigateToRandomHomepByTag}
+    >
       <div>{text}</div>
       {isRemovable ? (
         <XButton onClick={handleRemove}>
@@ -47,6 +64,8 @@ const SChip = styled.div<{ $isRemovable: boolean }>`
     ${(props) => (props.$isRemovable ? 'var(--gray-250)' : 'none')};
 
   word-break: keep-all;
+
+  cursor: ${(props) => (props.$isRemovable ? '' : 'pointer')};
 `;
 
 const XButton = styled.div`
