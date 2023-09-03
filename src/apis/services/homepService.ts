@@ -1,7 +1,5 @@
 import axiosInstance from '../config/axiosInstance';
 
-// left, mb, mt
-
 export const getItemList = async (section: string) => {
   try {
     const response = await axiosInstance.get(
@@ -10,7 +8,27 @@ export const getItemList = async (section: string) => {
 
     return response.data;
   } catch (error) {
-    throw new Error('Failed to fetch data');
+    if (error instanceof Error) throw new Error(error.message);
+  }
+};
+
+export const getRandomHomep = async () => {
+  try {
+    const response = await axiosInstance.get(`/api/homep/random`);
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) throw new Error(error.message);
+  }
+};
+
+export const getRandomHomepIdByTag = async (tagName: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/tags/${tagName}/ramdom`);
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) throw new Error(error.message);
   }
 };
 
@@ -20,7 +38,7 @@ export const getHomep = async (uuid: string) => {
 
     return response.data;
   } catch (error) {
-    throw new Error('Failed to fetch data');
+    if (error instanceof Error) throw new Error(error.message);
   }
 };
 
@@ -29,7 +47,7 @@ export const postHomep = async (data: object) => {
     const response = await axiosInstance.post('/api/homep', data);
 
     return response.data;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    if (error instanceof Error) throw new Error(error.message);
   }
 };
