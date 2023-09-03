@@ -14,6 +14,7 @@ const LayoutWrapper = styled.div`
   max-width: 800px;
   height: 100vh;
   padding: 20px;
+  margin: 0 auto;
 `;
 
 export default Layout;

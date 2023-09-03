@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { getHomep } from '../../apis/services/homepService';
+import { getHomep, getRandomHomep } from '../../apis/services/homepService';
 import cat from '../../assets/cat.svg';
 import url from '../../assets/url.svg';
 import Button from '../atoms/Button';
@@ -9,6 +10,7 @@ import Chip from '../atoms/Chip';
 import HomeP, { Item } from '../molecules/HomeP';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [homep, setHomep] = useState({
     nickname: '',
@@ -24,20 +26,21 @@ const Profile = () => {
     url: '',
   });
 
+  const lookAround = () => {
+    getRandomHomep().then((data) => {
+      navigate(`/profile/${data.uuid}`);
+    });
+  };
+
   useEffect(() => {
     if (!id) return;
 
     getHomep(id).then((data) => {
-      console.log(data);
       setHomep({
-        one: undefined,
-        two: undefined,
-        three: undefined,
-        bg: {
-          code: 'BG_ITEM_BEACH',
-          name: 'default',
-          imageUrl: 'https://image.homepsearch.site/default/BG/beach.svg',
-        } as Item,
+        one: data.one,
+        two: data.two,
+        three: data.three,
+        bg: data.bg,
         nickname: data.nickname,
         tags: data.tags,
         url: data.snsUrl,
@@ -49,7 +52,7 @@ const Profile = () => {
     <div>
       <Title>
         <Cat src={cat} alt={'cat'} />
-        <Nickname>{homep.nickname}</Nickname>
+        <Nickname>{homep.nickname} 님의 홈피</Nickname>
       </Title>
       <ChipList>
         {homep.tags.map((tag) => (
@@ -58,9 +61,9 @@ const Profile = () => {
       </ChipList>
       <HomeP
         readOnly={true}
-        // one={}
-        // two={}
-        // three={}
+        one={homep.one}
+        two={homep.two}
+        three={homep.three}
         bg={homep.bg}
       />
       <URLWrapper>
@@ -72,23 +75,28 @@ const Profile = () => {
           fill={'fill'}
           size={'full'}
           disabled={false}
-          text={'둘러보기'}
-          onClick={() => {}}
+          text={'홈피서지 더 둘러보기'}
+          onClick={lookAround}
         />
         <div>
-          <Button
-            fill={'weak'}
-            size={'full'}
-            disabled={false}
-            text={'공유하기'}
-            onClick={() => {}}
-          />
+          <CopyToClipboard
+            text={window.location.href}
+            onCopy={() => alert('프로필 URL이 복사되었어요.')}
+          >
+            <Button
+              fill={'weak'}
+              size={'full'}
+              disabled={false}
+              text={'공유하기'}
+              onClick={() => {}}
+            />
+          </CopyToClipboard>
           <Button
             fill={'weak'}
             size={'full'}
             disabled={false}
             text={'새로 만들기'}
-            onClick={() => {}}
+            onClick={() => navigate('/create')}
           />
         </div>
       </ButtonContainer>
